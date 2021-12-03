@@ -1,22 +1,10 @@
 const fs = require('fs');
-const util = require('../util.js');
+const util = require('./util.js');
 
-let depths = util.MapInput('./Input.txt', (aElem) => { return parseInt(aElem, 10); }, '\r\n');
+let depths = util.MapInput('./Input1.txt', (aElem) => { return parseInt(aElem, 10); }, '\r\n');
 
-//part1();
-//part2();
-//part2Alex();
-
-function part2Alex()
-{
-  let pluses = 0;
-  for (let i = 4; i < depths.length; i++ )
-  {
-    if (depths[i] > depths[i-3] )
-      pluses++;
-  }
-  console.log("Number of increases IS Alex:" + pluses);
-}
+part1();
+part2();
 
 function part1()
 {
