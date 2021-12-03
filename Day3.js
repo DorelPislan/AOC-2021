@@ -1,13 +1,10 @@
 const fs = require('fs');
-const util = require('../util.js');
+const util = require('./util.js');
 
-let inputStrings = util.SplitInput('./Input3.txt', '\n');
+let inputStrings = util.SplitInput('./Input3.txt', '\r\n');
 inputStrings.pop();//lastString is empty and we do not need it
 
-let bitsCount = inputStrings[0].length;
-
-let gammaRate = new Array(bitsCount)
-let epsilonRate = new Array(bitsCount);
+const BITS_COUNT = inputStrings[0].length;
 
 console.log(inputStrings);
 
@@ -16,11 +13,15 @@ part2();
 
 function part1() {
     
+    let gammaRate = new Array(BITS_COUNT)
+    let epsilonRate = new Array(BITS_COUNT);
+
     let halfInputSize = inputStrings.length / 2;
 
-    for (let bitIndex = 0; bitIndex < bitsCount; bitIndex++) {
+    for (let bitIndex = 0; bitIndex < BITS_COUNT; bitIndex++) {
 
         let onesCount = ComputeOnesCount(inputStrings, bitIndex);
+
         gammaRate[bitIndex] = onesCount > halfInputSize ? 1 : 0;
         epsilonRate[bitIndex] = 1 - gammaRate[bitIndex];
     }
@@ -32,8 +33,8 @@ function part1() {
 }
 
 function part2() {
-    let oxygenRatingDecimal = BinaryToDecimal(ComputeRating(inputStrings, 1));
-    let co2RatingDecimal = BinaryToDecimal(ComputeRating(inputStrings, 0));
+    let oxygenRatingDecimal = BinaryToDecimal( ComputeRating(inputStrings, 1) );
+    let co2RatingDecimal = BinaryToDecimal( ComputeRating(inputStrings, 0) );
 
     let result = oxygenRatingDecimal * co2RatingDecimal;
 
@@ -42,8 +43,7 @@ function part2() {
 //-------------------------------
 
 function ComputeOnesCount(inputStrings, bitIndex) {
-    let bitsCount = inputStrings[0].length;
-
+   
     let onesCount = 0;
 
     for (let inputIndex = 0; inputIndex < inputStrings.length; inputIndex++) {
@@ -55,9 +55,7 @@ function ComputeOnesCount(inputStrings, bitIndex) {
 
 function ComputeRating(inputStrings, valForMostCommon) {
 
-    let bitsCount = inputStrings[0].length;
-
-    for (let bitIndex = 0; bitIndex < bitsCount; bitIndex++) {
+    for (let bitIndex = 0; bitIndex < BITS_COUNT; bitIndex++) {
 
         let onesCount = ComputeOnesCount(inputStrings, bitIndex);
         let halfInputSize = inputStrings.length / 2;
