@@ -6,3 +6,16 @@ function ArrayToString(arr) {
 
     return str;
 }
+
+function MaxElem(aArray)
+{
+   let max = 0;
+   aArray.forEach( e => max = Math.max(e, max) ) ;
+   return max;
+}
+
+
+module.exports = {
+    ArrayToString,
+    MaxElem
+  }

@@ -1,17 +1,10 @@
 const fs = require('fs');
 const util = require('./util.js');
+const DorelUtil = require('./DorelUtil.js');
 
 let crabsPos = util.MapInput('./Input7.txt', aElem => parseInt(aElem), ',');
 
-function MaxElem(aArray)
-{
-   let max = 0;
-   aArray.forEach( e => max = Math.max(e, max) ) ;
-   return max;
-}
-
-let MaxCoord = MaxElem(crabsPos);
-let costs = new Array(MaxCoord);
+let MaxCoord = DorelUtil.MaxElem(crabsPos);
 
 part1();
 
@@ -36,7 +29,7 @@ function part1() {
           minCostCoord = horPos;
       }
     }
-    console.log("1: Minimum cost for aligning crabs is " + minCost + " and laignemnt is on position " + minCostCoord);
+    console.log("1: Minimum cost for aligning crabs is " + minCost + " and that is on position " + minCostCoord);
 }
 
 function part2() {
@@ -60,5 +53,5 @@ function part2() {
           minCostCoord = horPos;
       }
     }
-    console.log("2: Minimum cost for aligning crabs is " + minCost + " and laignemnt is on position " + minCostCoord);
+    console.log("2: Minimum cost for aligning crabs is " + minCost + " and that is on position " + minCostCoord);
 }
