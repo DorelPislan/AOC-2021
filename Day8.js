@@ -60,26 +60,35 @@ function part2() {
         let crtInputWires = inputs[i].wires;
         let mapForInput = DetectMapForInput(crtInputWires);
 
-        let crtInputOuts = inputs[i].outs;
-        //let decodedDigits = DecodeDigits(mapForInput, inputs[i].outputs);
+        let decodedDigits = DecodeDigits(mapForInput, inputs[i].outs);
 
-        // sum += OutsNumber(decodedDigits);
+        let number = ArrayOfDigitsToDecimal(decodedDigits);
+
+        sum += number;
     }
     console.log("2: Sum of all output numbers is: " + sum);
 }
 
 function DetectMapForInput(aWiresArray )
 {
-    let map  = new Map([
-        ['a', 'd'], 
-        ['b', 'e'],
-        ['c', 'a'],
-        ['d', 'f'],
-        ['e', 'g'],
-        ['f', 'b'],
-        ['g', 'c']
-    ]);
+    let map2  = new Map();
 
+    let mapKeys  = 'deafgbc';
+    let decoding = 'abcdefg';
+    
+    for(let i = 0; i < 7; i++)
+      map2[ mapKeys.charAt(i) ] = decoding.charAt( i );
+
+    let map  = new Map([
+        [ 'd', 'a'], 
+        [ 'e', 'b'],
+        [ 'a', 'c'],
+        [ 'f', 'd'],
+        [ 'g', 'e'],
+        [ 'b', 'f'],
+        [ 'c', 'g']
+    ]);
+/*
     let inputFor1 = GetElemByLength(aWiresArray, kDigsSegsCount[1] );
     let realSegsFor1 = kDigsSegs[1];
 
@@ -92,12 +101,12 @@ function DetectMapForInput(aWiresArray )
     let inputFor8 = GetElemByLength(aWiresArray, kDigsSegsCount[8] );
     let realSegsFor8 = kDigsSegs[8];
 
-    let decoded1 = DecodeDigit(inputFor1, map);
+    let decoded1 = DecodeDigit(inputFor1, map);    
+    let decoded7 = DecodeDigit(inputFor7, map);
     let decoded4 = DecodeDigit(inputFor4, map);
-    let decoded7 = DecodeDigit(inputFor4, map);
     let decoded8 = DecodeDigit(inputFor8, map);
-      
-   return map;
+  */ 
+   return map2;
 }
 
 function GetElemByLength(aArray, aReqLength)
@@ -121,19 +130,57 @@ function MapIsValid(aMap, aWiresArray)
 
 function DecodeDigit(aInputDigit, aMap)
 {
-   let decodedChars = new Array(9);
+   let decodedChars = new Array(aInputDigit.length);
 
    let inputChars = aInputDigit.split('');
 
    for(let ici = 0; ici < inputChars.length; ici++ )        
    {
-       let outChar = aMap[ inputChars[ici] ];
+       let inChar = inputChars[ici];
+       let outChar = aMap[ inChar ];
 
        if (outChar == null)
          outChar = 'X';
 
        decodedChars[ici] = outChar;         
    }
-   return inputChars
+   decodedChars.sort();
+   return decodedChars
+}
 
+function DecodeDigits(aMap , aOutputDigits)
+{
+    let outDigits = new Array();
+
+    for(let i = 0; i < aOutputDigits.length; i++)
+    {
+        let dec = DecodeDigit(aOutputDigits[i], aMap);
+        let decDigit = GetDigitsFromSegments(dec);
+        outDigits.push(decDigit);
+    }
+
+    return outDigits;
+}
+
+function GetDigitsFromSegments(aSegments)
+{
+    if ( Array.isArray(aSegments))
+      aSegments = aSegments.join('');
+
+    for (let i = 0; i < kDigsSegs.length; i++)
+    {
+        if (kDigsSegs[i] == aSegments)
+          return i;
+    }
+    return -1;
+}
+
+function ArrayOfDigitsToDecimal( aArray )
+{
+    let dec = 0;
+    for (let i = 0; i < aArray.length;i++)
+    {
+       dec = dec * 10 +  aArray[i];
+    }
+    return dec;
 }
