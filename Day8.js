@@ -75,37 +75,59 @@ function DetectMapForInput(aWiresArray )
 
     let mapKeys  = 'deafgbc';
     let decoding = 'abcdefg';
+
+    const kLetters = 'abcdefg';
     
     for(let i = 0; i < 7; i++)
       map2[ mapKeys.charAt(i) ] = decoding.charAt( i );
 
     let map  = new Map([
-        [ 'd', 'a'], 
-        [ 'e', 'b'],
-        [ 'a', 'c'],
-        [ 'f', 'd'],
-        [ 'g', 'e'],
-        [ 'b', 'f'],
-        [ 'c', 'g']
+        [ 'd'.charAt(0), 'b'.charAt(0)], 
+        [ 'e'.charAt(0), 'a'.charAt(0)],
+        [ 'a'.charAt(0), 'c'.charAt(0)],
+        [ 'f'.charAt(0), 'd'.charAt(0)],
+        [ 'g'.charAt(0), 'e'.charAt(0)],
+        [ 'b'.charAt(0), 'f'.charAt(0)],
+        [ 'c'.charAt(0), 'g'.charAt(0)]
     ]);
-/*
+    let map3 = new Array(8);
+    for(let i = 0 ; i < 7; i++ )
+    {
+        let possib = kLetters.slice(0, i) + kLetters.slice(i+ 1, kLetters.length);
+        map3[ kLetters[i]] = kLetters.substr(0);
+    }  
+/**/
     let inputFor1 = GetElemByLength(aWiresArray, kDigsSegsCount[1] );
     let realSegsFor1 = kDigsSegs[1];
+
+    map3[ inputFor1[0] ] = 'cf';
+    map3[ inputFor1[1] ] = 'cf';
 
     let inputFor7 = GetElemByLength(aWiresArray, kDigsSegsCount[7] );
     let realSegsFor7 = kDigsSegs[7];
 
+    let dif71 = GetDifference(inputFor7, inputFor1);
+    map3[ dif71[0] ] = 'a';
+
     let inputFor4 = GetElemByLength(aWiresArray, kDigsSegsCount[4] );
     let realSegsFor4 = kDigsSegs[4];
+
+    let dif41 = GetDifference(inputFor4, inputFor1);
+    map3[ dif41[0] ] = 'bd';
+    map3[ dif41[1] ] = 'bd';
 
     let inputFor8 = GetElemByLength(aWiresArray, kDigsSegsCount[8] );
     let realSegsFor8 = kDigsSegs[8];
 
+    let dif84 = GetDifference(inputFor8, inputFor4); 
+
+    let v = MapIsValid(map2, aWiresArray);
     let decoded1 = DecodeDigit(inputFor1, map);    
     let decoded7 = DecodeDigit(inputFor7, map);
     let decoded4 = DecodeDigit(inputFor4, map);
     let decoded8 = DecodeDigit(inputFor8, map);
-  */ 
+
+  /* */ 
    return map2;
 }
 
@@ -125,7 +147,11 @@ function MapIsValid(aMap, aWiresArray)
     for(let wi = 0 ; wi < aWiresArray.length; wi++)
     {        
         let decodedInput = DecodeDigit(aWiresArray[wi], aMap);
+        let segs = GetDigitOfSegments(decodedInput);
+        if (segs < 0)
+          return false;
     }
+    return true;
 }
 
 function DecodeDigit(aInputDigit, aMap)
@@ -162,7 +188,7 @@ function DecodeDigits(aMap , aOutputDigits)
     return outDigits;
 }
 
-function GetDigitsFromSegments(aSegments)
+function GetDigitOfSegments(aSegments)
 {
     if ( Array.isArray(aSegments))
       aSegments = aSegments.join('');
@@ -183,4 +209,22 @@ function ArrayOfDigitsToDecimal( aArray )
        dec = dec * 10 +  aArray[i];
     }
     return dec;
+}
+
+function GetDifference(aStr1, aStr2)
+{
+    if (aStr1.Length > aStr2.length)
+    {
+      let interm = aStr1;
+      aStr1 = aStr2;
+      aStr2 = interm;
+    }
+    let diff = "";
+    for (let i = 0; i < aStr1.length; i++)
+    {
+        let crtChar = aStr1[i];
+        if( aStr2.indexOf(crtChar) == -1)
+          diff+= crtChar;
+    }
+    return diff;
 }
