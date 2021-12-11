@@ -13,7 +13,7 @@ let inputLevels = inputLines.map(function (a) {
 const NO_OF_ROWS = inputLines.length;
 const NO_OF_COLUMNS = inputLevels[0].length;
 
-part1();
+//part1();
 
 part2();
 
@@ -43,7 +43,32 @@ function part1() {
 
 function part2() {
 
-    console.log("2: Total size of 3 largest basins is: " + "??");
+    const kMaxStepsCount = 10000000;    
+    let simStep = 0;
+    for (let step = 1; step <= kMaxStepsCount; step++) {
+
+        let newState = IncreaseEnergy(inputLevels);
+        let crtFlashes = 0;
+        do {
+            crtFlashes = Flash(newState);
+        }
+        while (crtFlashes > 0)
+
+        let count = ResetFlashes(newState);
+        if (count == 100 )
+        {
+            simStep =  step;            
+            break;
+        }
+        inputLevels = newState;
+    }
+    if (simStep == kMaxStepsCount)    
+      console.log("2: After " + kMaxStepsCount + " my octopuses still do not flush simultaneously");
+    else
+      console.log("2: Step at which al octopuses flashsimulataneously is: " + simStep);
+
+    
+    
 }
 
 function IncreaseEnergy(inputLevels) {
@@ -124,12 +149,17 @@ function Flash(aState) {
 }
 
 function ResetFlashes(aState) {
+    let count = 0;
     for (let i = 0; i < NO_OF_ROWS; i++) {
         for (let j = 0; j < NO_OF_COLUMNS; j++) {
             if (aState[i][j] < 0)
+            {
                 aState[i][j] = 0;
+                count++;
+            }
         }
     }
+    return count;
 }
 
 function printState(aState, aMsg) {
