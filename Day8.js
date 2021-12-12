@@ -3,7 +3,7 @@ const util = require('./util.js');
 const DorelUtil = require('./DorelUtil.js');
 
 
-let inputs = util.MapInput('./Input8Sample.txt', (aElem) => {
+let inputs = util.MapInput('./Input8.txt', (aElem) => {
 
     let pair = aElem.split(' | ');
   
@@ -66,8 +66,7 @@ function part2() {
 
         let number = ArrayOfDigitsToDecimal(decodedDigits);
 
-        sum += number;
-        break;
+        sum += number;        
     }
     console.log("2: Sum of all output numbers is: " + sum);
 }
@@ -129,9 +128,16 @@ function DetectMapForInput(aWiresArray )
 
     let inputFor5 = IsIncluded(inputFor6, inputFor235[0] ) ? inputFor235[0] : inputFor235[1];
 
+    let dif89 = GetDifference(inputFor8, inputFor9);
+    RestrictPossibilities(wiresPossib, dif89, 'e');
 
+    let dif80 = GetDifference(inputFor8, inputFor0);
+    RestrictPossibilities(wiresPossib, dif80, 'd');
 
-
+    let dif86 = GetDifference(inputFor8, inputFor6);
+    RestrictPossibilities(wiresPossib, dif86, 'c');
+    
+    return wiresPossib;
 
     let v = MapIsValid(map2, aWiresArray);
     let decoded1 = DecodeDigit(inputFor1, map);    
