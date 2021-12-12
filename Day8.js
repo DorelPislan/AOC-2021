@@ -14,6 +14,8 @@ let inputs = util.MapInput('./Input8Sample.txt', (aElem) => {
   },
     '\r\n');
 
+const kLetters = 'abcdefg';
+
 //                         0       1       2        3        4        5       6         7       8          9
 const kDigsSegs     = [ 'abcefg', 'cf', 'acdeg', 'acdfg', 'bcdf', 'abdfg', 'abdefg', 'acf', 'abcdefg', 'abcdfg' ];
 const kDigsSegsCount= [    6,      2,      5,       5,       4,       5,      6 ,       3,      7,         6    ];
@@ -65,6 +67,7 @@ function part2() {
         let number = ArrayOfDigitsToDecimal(decodedDigits);
 
         sum += number;
+        break;
     }
     console.log("2: Sum of all output numbers is: " + sum);
 }
@@ -76,8 +79,6 @@ function DetectMapForInput(aWiresArray )
     let mapKeys  = 'deafgbc';
     let decoding = 'abcdefg';
 
-    const kLetters = 'abcdefg';
-    
     for(let i = 0; i < 7; i++)
       map2[ mapKeys.charAt(i) ] = decoding.charAt( i );
 
@@ -90,36 +91,33 @@ function DetectMapForInput(aWiresArray )
         [ 'b'.charAt(0), 'f'.charAt(0)],
         [ 'c'.charAt(0), 'g'.charAt(0)]
     ]);
-    let map3 = new Array(8);
+/**/
+    
+
+    let wiresPossib = new Array(8);
     for(let i = 0 ; i < 7; i++ )
     {
-        let possib = kLetters.slice(0, i) + kLetters.slice(i+ 1, kLetters.length);
-        map3[ kLetters[i]] = kLetters.substr(0);
+        //let possib = kLetters.slice(0, i) + kLetters.slice(i+ 1, kLetters.length);
+        wiresPossib[ kLetters[i] ] = kLetters.substr(0);
     }  
-/**/
-    let inputFor1 = GetElemByLength(aWiresArray, kDigsSegsCount[1] );
-    let realSegsFor1 = kDigsSegs[1];
 
-    map3[ inputFor1[0] ] = 'cf';
-    map3[ inputFor1[1] ] = 'cf';
+    let inputFor1 = GetElemByLength(aWiresArray, kDigsSegsCount[1] );
+    RestrictPossibilities(wiresPossib, inputFor1, 'cf');
 
     let inputFor7 = GetElemByLength(aWiresArray, kDigsSegsCount[7] );
-    let realSegsFor7 = kDigsSegs[7];
 
     let dif71 = GetDifference(inputFor7, inputFor1);
-    map3[ dif71[0] ] = 'a';
+    RestrictPossibilities(wiresPossib, dif71, 'a')
 
     let inputFor4 = GetElemByLength(aWiresArray, kDigsSegsCount[4] );
-    let realSegsFor4 = kDigsSegs[4];
 
     let dif41 = GetDifference(inputFor4, inputFor1);
-    map3[ dif41[0] ] = 'bd';
-    map3[ dif41[1] ] = 'bd';
+    RestrictPossibilities(wiresPossib, dif41, 'bd');
 
     let inputFor8 = GetElemByLength(aWiresArray, kDigsSegsCount[8] );
-    let realSegsFor8 = kDigsSegs[8];
 
-    let dif84 = GetDifference(inputFor8, inputFor4); 
+    //let dif84 = GetDifference(inputFor8, inputFor4); 
+    //RestrictPossibilities(wiresPossib, dif84, 'aeg');
 
     let v = MapIsValid(map2, aWiresArray);
     let decoded1 = DecodeDigit(inputFor1, map);    
@@ -131,6 +129,38 @@ function DetectMapForInput(aWiresArray )
    return map2;
 }
 
+function RestrictPossibilities(aWiresMap, aInput, aPossib)
+{
+    let alteredKeys = aInput.split('');
+    for (const ch of aInput)
+    {
+        let newPossib = KeepOnly(aWiresMap[ch], aPossib);
+        aWiresMap[ch] = newPossib;
+    }
+    for (const ch of kLetters)
+    {
+        if( alteredKeys.indexOf(ch) != -1)
+          continue;
+
+        let newVal = aWiresMap[ch];
+        for (const p of aPossib)
+        {
+            newVal = newVal.replace(p, '');              
+        }
+        aWiresMap[ch] = newVal;
+    }
+}
+
+function KeepOnly(aInput, aWhatToKeep)
+{
+    let newArray = aInput.split('');
+    function Selector(crtVal)
+    {
+       return this.indexOf(crtVal) >= 0;
+    }
+    let onlyKeepers = newArray.filter( Selector , aWhatToKeep);
+    return onlyKeepers.join('');
+}
 function GetElemByLength(aArray, aReqLength)
 {
     for(let i = 0; i < aArray.length; i++)
@@ -181,7 +211,7 @@ function DecodeDigits(aMap , aOutputDigits)
     for(let i = 0; i < aOutputDigits.length; i++)
     {
         let dec = DecodeDigit(aOutputDigits[i], aMap);
-        let decDigit = GetDigitsFromSegments(dec);
+        let decDigit = GetDigitOfSegments(dec);
         outDigits.push(decDigit);
     }
 
