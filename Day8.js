@@ -177,6 +177,7 @@ function KeepOnly(aInput, aWhatToKeep)
     let onlyKeepers = newArray.filter( Selector , aWhatToKeep);
     return onlyKeepers.join('');
 }
+
 function GetElemsByLength(aArray, aReqLength)
 {
     let res = new Array();
@@ -189,18 +190,6 @@ function GetElemsByLength(aArray, aReqLength)
 
     }
     return res;
-}
-
-function MapIsValid(aMap, aWiresArray)
-{
-    for(let wi = 0 ; wi < aWiresArray.length; wi++)
-    {        
-        let decodedInput = DecodeDigit(aWiresArray[wi], aMap);
-        let segs = GetDigitOfSegments(decodedInput);
-        if (segs < 0)
-          return false;
-    }
-    return true;
 }
 
 function DecodeDigit(aInputDigit, aMap)
