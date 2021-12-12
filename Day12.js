@@ -70,6 +70,7 @@ let inputLines = fs.readFileSync('input12.txt', 'utf8').split(/\r?\n/);
 let gAllNodes = new Map();
 
 let gPathsCount = 0;
+let gPathsCount2 = 0;
 
 function computeGraph()
 {
@@ -98,9 +99,9 @@ function computeGraph()
 
 computeGraph();
 
-part1();
+//part1();
 
-//part2();
+part2();
 
 function part1() {
  
@@ -114,5 +115,64 @@ function part1() {
 
 function part2() {
 
-    console.log("2: Step at which al octopuses flashsimulataneously is: " );  
+    let startNode = gAllNodes.get("start");
+    let endNode   = gAllNodes.get("end");
+
+    CountPaths(startNode,endNode);
+
+    console.log("2:  Total number of paths from start to end is: " + gPathsCount2 );  
+}
+
+function CountPaths(aStartNode, aEndNode, aVisitedNodes )
+{
+    if (aVisitedNodes == undefined)
+    {
+        aVisitedNodes = new Array();        
+    }
+
+    aVisitedNodes.push(aStartNode);
+
+    for (const node of aStartNode.mEdges)
+    {
+        if(node == aVisitedNodes[0])
+          continue;
+
+        if(node.mIsSmallCave)
+        {            
+            let firstIndex = aVisitedNodes.indexOf( node );
+            if (firstIndex != - 1)
+            {
+              if (ExitsSmallCavedDoubleUsed(aVisitedNodes))
+                continue;
+            }
+        }
+        if(node == aEndNode)
+        {
+            //console.log( "Path fom start to end:     " + aVisitedNodes.map( (a) => a.mName ).join("---"));
+         
+            gPathsCount2++;            
+        }
+        else
+        {
+            CountPaths(node, aEndNode, aVisitedNodes);
+
+            aVisitedNodes.pop();
+        }
+    }
+}
+
+function ExitsSmallCavedDoubleUsed(aVisitedNodes)
+{  
+  for (let i = 0 ; i < aVisitedNodes.length - 1; i++)
+  {
+      if (!aVisitedNodes[i].mIsSmallCave)
+        continue;
+
+      for (let j = i + 1; j < aVisitedNodes.length; j++)
+      {
+          if( aVisitedNodes[i] == aVisitedNodes[j])
+            return true;
+      }
+  }
+  return false;
 }
