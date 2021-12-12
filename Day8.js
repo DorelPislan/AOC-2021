@@ -101,23 +101,37 @@ function DetectMapForInput(aWiresArray )
         wiresPossib[ kLetters[i] ] = kLetters.substr(0);
     }  
 
-    let inputFor1 = GetElemByLength(aWiresArray, kDigsSegsCount[1] );
+    let inputFor1 = GetElemsByLength(aWiresArray, kDigsSegsCount[1] )[0];
     RestrictPossibilities(wiresPossib, inputFor1, 'cf');
 
-    let inputFor7 = GetElemByLength(aWiresArray, kDigsSegsCount[7] );
+    let inputFor7 = GetElemsByLength(aWiresArray, kDigsSegsCount[7] )[0];
 
     let dif71 = GetDifference(inputFor7, inputFor1);
     RestrictPossibilities(wiresPossib, dif71, 'a')
 
-    let inputFor4 = GetElemByLength(aWiresArray, kDigsSegsCount[4] );
+    let inputFor4 = GetElemsByLength(aWiresArray, kDigsSegsCount[4] )[0];
 
     let dif41 = GetDifference(inputFor4, inputFor1);
     RestrictPossibilities(wiresPossib, dif41, 'bd');
 
-    let inputFor8 = GetElemByLength(aWiresArray, kDigsSegsCount[8] );
+    let inputFor8 = GetElemsByLength(aWiresArray, kDigsSegsCount[8] )[0];
 
     //let dif84 = GetDifference(inputFor8, inputFor4); 
     //RestrictPossibilities(wiresPossib, dif84, 'aeg');
+
+    let inputFor235 = GetElemsByLength(aWiresArray, kDigsSegsCount[2] );
+    let inputFor3 = RemoveElementThatIncludes(inputFor235, inputFor7 );
+
+    let inputFor069 = GetElemsByLength(aWiresArray, kDigsSegsCount[0] );
+    let inputFor6 = RemoveElementThatDoesNotIncludes(inputFor069, inputFor7 );
+    let inputFor9 = RemoveElementThatIncludes(inputFor069, inputFor3 );
+    let inputFor0 = inputFor069[0];
+
+    let inputFor5 = IsIncluded(inputFor6, inputFor235[0] ) ? inputFor235[0] : inputFor235[1];
+
+
+
+
 
     let v = MapIsValid(map2, aWiresArray);
     let decoded1 = DecodeDigit(inputFor1, map);    
@@ -129,9 +143,46 @@ function DetectMapForInput(aWiresArray )
    return map2;
 }
 
-function RestrictPossibilities(aWiresMap, aInput, aPossib)
+function RemoveElementThatIncludes(aSet, aInclusion )
 {
-    let alteredKeys = aInput.split('');
+    for(let i = 0; i < aSet.length; i++)
+    {
+        if ( IsIncluded( aSet[i], aInclusion) )
+        {
+            let foundElem = aSet[i];
+            aSet.splice(i, 1);
+            return foundElem;
+        }          
+    }
+    return null;
+}
+
+function RemoveElementThatDoesNotIncludes(aSet, aInclusion )
+{
+    for(let i = 0; i < aSet.length; i++)
+    {
+        if ( ! IsIncluded( aSet[i], aInclusion) )
+        {
+            let foundElem = aSet[i];
+            aSet.splice(i, 1);
+            return foundElem;
+        }          
+    }
+    return null;
+}
+
+function IsIncluded(aSet, aElement)
+{
+    for (let ch of aElement)
+    {
+        if (aSet.indexOf(ch) == -1)
+          return false;
+    }
+    return true;
+}
+
+function RestrictPossibilities(aWiresMap, aInput, aPossib)
+{ 
     for (const ch of aInput)
     {
         let newPossib = KeepOnly(aWiresMap[ch], aPossib);
@@ -139,7 +190,7 @@ function RestrictPossibilities(aWiresMap, aInput, aPossib)
     }
     for (const ch of kLetters)
     {
-        if( alteredKeys.indexOf(ch) != -1)
+        if( aInput.indexOf(ch) != -1)
           continue;
 
         let newVal = aWiresMap[ch];
@@ -161,15 +212,18 @@ function KeepOnly(aInput, aWhatToKeep)
     let onlyKeepers = newArray.filter( Selector , aWhatToKeep);
     return onlyKeepers.join('');
 }
-function GetElemByLength(aArray, aReqLength)
+function GetElemsByLength(aArray, aReqLength)
 {
+    let res = new Array();
     for(let i = 0; i < aArray.length; i++)
     {
         if(aArray[i].length == aReqLength)
-          return aArray[i];
+        {
+           res.push(aArray[i]);         
+        }
 
     }
-    return null;
+    return res;
 }
 
 function MapIsValid(aMap, aWiresArray)
