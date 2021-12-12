@@ -19,14 +19,6 @@ const kLetters = 'abcdefg';
 //                         0       1       2        3        4        5       6         7       8          9
 const kDigsSegs     = [ 'abcefg', 'cf', 'acdeg', 'acdfg', 'bcdf', 'abdfg', 'abdefg', 'acf', 'abcdefg', 'abcdfg' ];
 const kDigsSegsCount= [    6,      2,      5,       5,       4,       5,      6 ,       3,      7,         6    ];
-
-let SegCountToDigit = new Map();
-SegCountToDigit.set(2, [1] );
-SegCountToDigit.set(3, [7] ); 
-SegCountToDigit.set(4, [4] ),
-SegCountToDigit.set(5, [2, 3, 5] );
-SegCountToDigit.set(6, [0, 6, 9] );
-SegCountToDigit.set(7, [8] );
  
 
 //part1();
@@ -73,30 +65,9 @@ function part2() {
 
 function DetectMapForInput(aWiresArray )
 {
-    let map2  = new Map();
-
-    let mapKeys  = 'deafgbc';
-    let decoding = 'abcdefg';
-
-    for(let i = 0; i < 7; i++)
-      map2[ mapKeys.charAt(i) ] = decoding.charAt( i );
-
-    let map  = new Map([
-        [ 'd'.charAt(0), 'b'.charAt(0)], 
-        [ 'e'.charAt(0), 'a'.charAt(0)],
-        [ 'a'.charAt(0), 'c'.charAt(0)],
-        [ 'f'.charAt(0), 'd'.charAt(0)],
-        [ 'g'.charAt(0), 'e'.charAt(0)],
-        [ 'b'.charAt(0), 'f'.charAt(0)],
-        [ 'c'.charAt(0), 'g'.charAt(0)]
-    ]);
-/**/
-    
-
     let wiresPossib = new Array(8);
     for(let i = 0 ; i < 7; i++ )
-    {
-        //let possib = kLetters.slice(0, i) + kLetters.slice(i+ 1, kLetters.length);
+    {    
         wiresPossib[ kLetters[i] ] = kLetters.substr(0);
     }  
 
@@ -114,9 +85,6 @@ function DetectMapForInput(aWiresArray )
     RestrictPossibilities(wiresPossib, dif41, 'bd');
 
     let inputFor8 = GetElemsByLength(aWiresArray, kDigsSegsCount[8] )[0];
-
-    //let dif84 = GetDifference(inputFor8, inputFor4); 
-    //RestrictPossibilities(wiresPossib, dif84, 'aeg');
 
     let inputFor235 = GetElemsByLength(aWiresArray, kDigsSegsCount[2] );
     let inputFor3 = RemoveElementThatIncludes(inputFor235, inputFor7 );
@@ -138,15 +106,6 @@ function DetectMapForInput(aWiresArray )
     RestrictPossibilities(wiresPossib, dif86, 'c');
     
     return wiresPossib;
-
-    let v = MapIsValid(map2, aWiresArray);
-    let decoded1 = DecodeDigit(inputFor1, map);    
-    let decoded7 = DecodeDigit(inputFor7, map);
-    let decoded4 = DecodeDigit(inputFor4, map);
-    let decoded8 = DecodeDigit(inputFor8, map);
-
-  /* */ 
-   return map2;
 }
 
 function RemoveElementThatIncludes(aSet, aInclusion )
