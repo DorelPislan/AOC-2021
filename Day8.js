@@ -105,6 +105,9 @@ function DetectMapForInput(aWiresArray )
     let dif86 = GetDifference(inputFor8, inputFor6);
     RestrictPossibilities(wiresPossib, dif86, 'c');
     
+    let dif93 = GetDifference(inputFor9, inputFor3);
+    RestrictPossibilities(wiresPossib, dif93, 'b');
+
     return wiresPossib;
 }
 
